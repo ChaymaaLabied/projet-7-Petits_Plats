@@ -9,12 +9,14 @@ import {
 import { initDropdown, setDropdownBtn } from "../utils/dropdown.js"
 
 let recettes = recipes
+let selectedAppliances = []
+let allAppliances;
 const inputMainReseach = document.getElementById("input")
+
 
 // creation des cartes en important les données du fichier recipes.js
 function getRecipeCard(dataRecipe) {
   const { image, name, ingredients, time, description } = dataRecipe
-  console.log(ingredients)
   // la creation des elements DOM des cartes des recettes
   const articleRecipeCard = document.createElement("article")
   articleRecipeCard.setAttribute("class", "recipe-card")
@@ -88,23 +90,40 @@ function displayMediaRecipeCard() {
     noResult.textContent = `Aucune recette ne contient "${inputMainReseach.value}" vous pouvez chercher «tarte aux pommes», «poisson», etc`;
     recipeSection.appendChild(noResult)
   }
-  console.log(recettes)
   recettes.forEach((elt) => {
     recipeSection.appendChild(getRecipeCard(elt))
   });
 }
 
 
-// affichage des appreils dans le dropdown
+// affichage des appareils dans le dropdown
 function displayAppliances(){
   const appliancesList = document.querySelector(
     "#appliances .dropdown__options")
     appliancesList.innerHTML = "" // pour eviter le cumul des resultats d'affichage a chaque fois , on efface the old one..
-    const appliances = getAppliances(recettes)
-    appliances.forEach((elt) =>{
+    allAppliances.forEach((elt) =>{
       const li = document.createElement("li")
       li.textContent = elt
       appliancesList.appendChild(li)
+      li.addEventListener("click",(e)=>{
+        console.log('TOTA')
+        const selectedOption = document.createElement('li');
+        const value = li.textContent
+        selectedOption.textContent= value
+        selectedOption.addEventListener('click',(e)=>{
+          console.log('ANNULEEEE')
+          selectedOption.classList.toggle("selected")
+          document.querySelector("#appliances .dropdown__selected-options").removeChild(selectedOption)
+          // remove from selectedApplicances
+          selectedAppliances = selectedAppliances.filter(app => app !== value)
+          // refacto
+          allAppliances = getAppliances(recettes,selectedAppliances)
+          displayAppliances()
+        })
+        selectedAppliances.push(value)
+        li.classList.toggle("selected")
+        document.querySelector("#appliances .dropdown__selected-options").appendChild(selectedOption)
+      })
     })
 }
 // affichage des ingredients dans le dropdown
@@ -132,12 +151,14 @@ function displayUstensils() {
     const li = document.createElement("li")
     li.textContent = elt
     ustensilsList.appendChild(li)
-  });
+  })
 }
 
 // l'appel des fct d'affichage 
 function refreshDisplay() {
   displayMediaRecipeCard()
+  // This is nice
+  allAppliances = getAppliances(recettes,selectedAppliances)
   displayAppliances()
   displayIngredients()
   displayUstensils()
@@ -148,13 +169,21 @@ refreshDisplay()
 
 
 //  le listener principale pour effectuer la recherche dans la barre pricipale
+
+const divFoundRecipes = document.querySelector(".filters-section__recipes-found")
+divFoundRecipes.textContent = `${recipes.length} Recettes`
 inputMainReseach.addEventListener("input", (e) => {
   const searchInput = e.target.value
+  //utiliser opérateur ternaire 
   if (searchInput.length >= 3) {
+    console.log('searchInput',searchInput)
+    console.log('search(recettes, searchInput)',search(recettes, searchInput))
     recettes = search(recettes, searchInput)
+
   } else {
     recettes = recipes
   }
+  divFoundRecipes.textContent = `${recettes.length} Recettes`
   refreshDisplay()
 })
 
@@ -167,16 +196,71 @@ setDropdownBtn(ingredientsDropdown)
 setDropdownBtn(appliancesDropdown)
 setDropdownBtn(ustensilsDropdown)
 
-// recherche par tag 
+// recherche par tag dans appareils
 
-const inputTAGsearch = document.getElementById("TAGsearch")
+const inputSearchAppliances = document.getElementById("TAGsearch_Appliances")
 
-inputTAGsearch.addEventListener("input", (e) => {
-  const searchInput = e.target.value
-  if (searchInput.length >= 1) {
-    recettes = applianceSearchByTag(recettes, searchInput)
-  } else {
-    recettes = recipes
+inputSearchAppliances.addEventListener("input", (e) => {
+  const TAGsearchInput = e.target.value
+  // let resultGetAppliance = getAppliances(recettes)
+  const availableAppliances = getAppliances(recettes, selectedAppliances)
+  if(TAGsearchInput!== ""){
+    allAppliances = applianceSearchByTag(availableAppliances, TAGsearchInput)
   }
-  refreshDisplay()
+  else{
+    allAppliances = availableAppliances
+  }
+  // console.log(resultApplianceSearch)
+  // const appliances = document.querySelector(
+  //   "#appliances .dropdown__options")
+  //   appliancesList.innerHTML = ""
+  //   resultGetAppliance.forEach((elt) =>{
+  //     const li = document.createElement("li")
+  //     li.textContent = elt
+  //     appliancesList.appendChild(li)
+  //   }) 
+  displayAppliances()
 })
+
+
+
+// recherche par tag dans ustensils
+
+const inputSearchUstensils = document.getElementById("TAGsearch_ustensils")
+
+inputSearchUstensils.addEventListener("input", (e) => {
+  const TAGsearchInput = e.target.value // est ce que je doischanger le nom de la variable
+  const resultGetUstensils = getUstensils(recettes)
+  const resultApplianceSearch = applianceSearchByTag(resultGetUstensils, TAGsearchInput)
+  const ustensilsList = document.querySelector(
+    "#ustensils .dropdown__options"
+  )
+    ustensilsList.innerHTML = ""
+    resultApplianceSearch.forEach((elt) =>{
+      const li = document.createElement("li")
+      li.textContent = elt
+      ustensilsList.appendChild(li)
+    })
+
+
+})
+// recherche par tag dans ustensils
+
+const inputSearchIngredients = document.getElementById("TAGsearch_ingredients")
+
+inputSearchIngredients.addEventListener("input", (e) => {
+  const TAGsearchInput = e.target.value // est ce que je dois changer le nom de la variable
+  const resultGetIngredients = getIngredients(recettes) // had la variable doit etre initialiser par la valeur dial kolshi apres atakhad le resulta dial la recherche 
+  const resultApplianceSearch = applianceSearchByTag(resultGetIngredients, TAGsearchInput)
+  const ingredientsList = document.querySelector(
+    "#ingredients .dropdown__options"
+  )
+  ingredientsList.innerHTML = ""
+  resultApplianceSearch.forEach((elt) => {
+    const li = document.createElement("li")
+    li.textContent = elt
+    ingredientsList.appendChild(li)
+  })
+
+})
+// console.log(recettes.length)
