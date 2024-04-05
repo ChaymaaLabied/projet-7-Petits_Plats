@@ -4,9 +4,7 @@ import {
   getIngredients,
   getUstensils,
   search,
-  applianceSearchByTag,
-  ingredientSearchByTag,
-  ustensileSearchByTag
+  searchByTag
 } from "../template/template.js";
 import { setDropdownBtn } from "../utils/dropdown.js";
 
@@ -30,12 +28,12 @@ function getRecipeCard(dataRecipe) {
   const { image, name, ingredients, time, description } = dataRecipe;
   // la creation des elements DOM des cartes des recettes
   const articleRecipeCard = document.createElement("article");
-  articleRecipeCard.setAttribute("class", "recipe-card");
+  articleRecipeCard.classList.add("recipe-card");
   const recipeTime = document.createElement("div");
-  recipeTime.setAttribute("class", "recipe-card__time"); // setatrr a changer b classlist push
+  recipeTime.classList.add("recipe-card__time"); 
   recipeTime.textContent = `${time}min`;
   const recipeDivImg = document.createElement("div");
-  recipeDivImg.setAttribute("class", "recipe-card__img");
+  recipeDivImg.classList.add("recipe-card__img");
   const recipeImg = document.createElement("img");
   recipeImg.setAttribute("src", `assets/Recettes/${image}`);
   recipeImg.setAttribute("alt", `la recette : ${name}`);
@@ -43,35 +41,35 @@ function getRecipeCard(dataRecipe) {
   recipeDivImg.appendChild(recipeImg); //  ajout au dom de l'image
 
   const recipeDivContent = document.createElement("div");
-  recipeDivContent.setAttribute("class", "recipe-card__content");
+  recipeDivContent.classList.add("recipe-card__content");
   const RecipeName = document.createElement("h2");
-  RecipeName.setAttribute("class", "recipe-card__name");
+  RecipeName.classList.add("recipe-card__name");
   RecipeName.textContent = name;
   const recipeSubtitleRecette = document.createElement("h3");
-  recipeSubtitleRecette.setAttribute("class", "recipe-card__subtitle");
+  recipeSubtitleRecette.classList.add("recipe-card__subtitle");
   recipeSubtitleRecette.textContent = "Recette";
   const recipeDivRecette = document.createElement("div");
-  recipeDivRecette.setAttribute("class", "recipe-card__recipe");
+  recipeDivRecette.classList.add("recipe-card__recipe");
   recipeDivRecette.textContent = description;
   const recipeTexte = document.createElement("p");
 
   recipeDivRecette.appendChild(recipeTexte);
 
   const recipeSubtitleIngredients = document.createElement("h3");
-  recipeSubtitleIngredients.setAttribute("class", "recipe-card__subtitle");
+  recipeSubtitleIngredients.classList.add("recipe-card__subtitle");
   recipeSubtitleIngredients.textContent = "Ingredients";
 
   const recipeDivIngredientsList = document.createElement("div");
-  recipeDivIngredientsList.setAttribute("class", "recipe-card__list");
+  recipeDivIngredientsList.classList.add("recipe-card__list");
 
   ingredients.forEach((elt) => {
     const recipeIngredients = document.createElement("div");
-    recipeIngredients.setAttribute("class", "recipe-card__ingredient");
+    recipeIngredients.classList.add("recipe-card__ingredient");
     const recipeIngrName = document.createElement("p");
     recipeIngrName.textContent = elt.ingredient;
-    recipeIngrName.setAttribute("class", "name");
+    recipeIngrName.classList.add("name");
     const recipeIngrQuantity = document.createElement("p");
-    recipeIngrQuantity.setAttribute("class", "quantity");
+    recipeIngrQuantity.classList.add("quantity");
     recipeIngrQuantity.textContent = elt.quantity;
 
     recipeIngredients.appendChild(recipeIngrName);
@@ -93,25 +91,26 @@ function getRecipeCard(dataRecipe) {
 }
 
 // affichage des cartes dans le DOM , en traitant le cas ou on a aucune carte issue de la recherche
+
 function displayMediaRecipeCard() {
   const recipeSection = document.querySelector(".recipe-section");
   recipeSection.innerHTML = "";
+  
   if (recettes.length === 0) {
     const noResult = document.createElement("p");
     noResult.textContent = `Aucune recette ne contient "${inputMainReseach.value}" vous pouvez chercher «tarte aux pommes», «poisson», etc`;
     recipeSection.appendChild(noResult);
+  } else {
+    recettes.map(getRecipeCard).forEach(recipeCard => recipeSection.appendChild(recipeCard));
   }
-  recettes.forEach((elt) => {
-    recipeSection.appendChild(getRecipeCard(elt));
-  });
 }
 
-// affichage des appareils dans le dropdown
+// // affichage des appareils dans le dropdown
 function displayAppliances(appliances) {
   const appliancesList = document.querySelector(
     "#appliances .dropdown__options"
   );
-  appliancesList.innerHTML = ""; // pour eviter le cumul des resultats d'affichage a chaque fois , on efface the old one..
+  appliancesList.innerHTML = ""; // pour eviter le cumul des resultats d'affichage a chaque fois , on efface the old ones..
   appliances.forEach((elt) => {
     const li = document.createElement("li");
     li.textContent = elt;
@@ -260,6 +259,67 @@ function displayUstensils(ustensils) {
   });
 }
 
+//  version 2 de tt ces 3 fct 
+// function displayOptions(options, containerSelector, selectedOptionsArray, refreshFunction) {
+//   const optionsList = document.querySelector(containerSelector + " .dropdown__options");
+//   optionsList.innerHTML = "";
+
+//   options.forEach((option) => {
+//     const li = document.createElement("li");
+//     li.textContent = option;
+//     optionsList.appendChild(li);
+
+//     li.addEventListener("click", () => {
+//       const selectedOption = document.createElement("li");
+//       const value = li.textContent;
+//       selectedOption.textContent = value;
+
+//       const unselectButton = document.createElement("div");
+//       unselectButton.classList.add("unselect-btn");
+//       unselectButton.addEventListener("click", unselectTag);
+//       selectedOption.appendChild(unselectButton);
+
+//       li.classList.toggle("selected");
+//       document.querySelector(containerSelector + " .dropdown__selected-options").appendChild(selectedOption);
+
+//       // Ajouter à Selected-tags
+//       const selectedTags = document.querySelector(".selected-tags");
+//       const tag = document.createElement("div");
+//       tag.textContent = value;
+//       const unselectTagButton = unselectButton.cloneNode(true);
+//       unselectTagButton.addEventListener("click", unselectTag);
+//       tag.appendChild(unselectTagButton);
+//       selectedTags.appendChild(tag);
+
+//       selectedOptionsArray.push(value);
+//       refreshFunction();
+
+//       function unselectTag() {
+//         selectedOption.classList.toggle("selected");
+//         document.querySelector(containerSelector + " .dropdown__selected-options").removeChild(selectedOption);
+//         selectedTags.removeChild(tag);
+//         selectedOptionsArray = selectedOptionsArray.filter((elt) => elt !== value);
+//         refreshFunction();
+//       }
+//     });
+//   });
+// }
+
+// // Usage
+// function displayAppliances(appliances) {
+//   displayOptions(appliances, "#appliances", selectedAppliance, refreshSearch);
+// }
+
+// function displayIngredients(ingredients) {
+//   displayOptions(ingredients, "#ingredients", selectedIngredients, refreshSearch);
+// }
+
+// function displayUstensils(ustensils) {
+//   displayOptions(ustensils, "#ustensils", selectedUstensiles, refreshSearch);
+// }
+
+
+
 // l'appel des fct d'affichage
 function refreshSearch() {
   //utiliser opérateur ternaire
@@ -305,7 +365,7 @@ const inputSearchAppliances = document.getElementById("TAGsearch_Appliances");
 
 inputSearchAppliances.addEventListener("input", (e) => {
   const TAGsearchInput = e.target.value;
-  displayAppliances(applianceSearchByTag(allAppliances, TAGsearchInput));
+  displayAppliances(searchByTag(allAppliances, TAGsearchInput));
 });
 
 // recherche par tag dans ustensils
@@ -313,12 +373,12 @@ inputSearchAppliances.addEventListener("input", (e) => {
 const inputSearchUstensils = document.getElementById("TAGsearch_ustensils");
 inputSearchUstensils.addEventListener("input", (e) => {
   const TAGsearchInput = e.target.value; // est ce que je doischanger le nom de la variable
-  displayUstensils(ustensileSearchByTag(allUstensiles, TAGsearchInput));
+  displayUstensils(searchByTag(allUstensiles, TAGsearchInput));
 });
 // recherche par tag dans ustensils
 
 const inputSearchIngredients = document.getElementById("TAGsearch_ingredients");
 inputSearchIngredients.addEventListener("input", (e) => {
   const TAGsearchInput = e.target.value; // est ce que je dois changer le nom de la variable
- displayIngredients(ingredientSearchByTag(allIngredients, TAGsearchInput))
+ displayIngredients(searchByTag(allIngredients, TAGsearchInput))
 });

@@ -7,130 +7,82 @@ export function search(
   selectedUstensiles,
   selectedIngredients
 ) {
-    // console.log('selectedIngredients',selectedIngredients)
-  const result = [];
-  if(input.length < 3 && selectedIngredients.length === 0 && selectedUstensiles.length === 0  &&  selectedAppliance === ""){
-    return recipes;
-  }
-  for (let i = 0; i < recipes.length; i++) {
-    const recipe = recipes[i];
-    // Appliance tag
-    if (selectedAppliance ==='' || selectedAppliance === recipe.appliance) {
-      // Ustensiles tag
-      if (
-        selectedUstensiles.length === 0 ||
-        selectedUstensiles.every((elt) => recipe.ustensils.includes(elt))
-      ) {
-        // Ingredients tag
-        const ingredients = recipe.ingredients.map(ing => ing.ingredient)
-        if (
-            selectedIngredients.length === 0 ||
-            selectedIngredients.every((elt) => ingredients.includes(elt))
-        ) {
-            // la recherche dans la barre principale
-          if (
-            recipe.name.includes(input) ||
-            recipe.description.includes(input)
-          ) {
-            result.push(recipe);
-          } else {
-            for (let j = 0; j < recipe.ingredients.length; j++) {
-              if (recipe.ingredients[j].ingredient.includes(input)) {
-                result.push(recipe);
-              }
-            }
-          }
-        }
-      }
-    }
-  }
-  return result;
+  return recipes.filter((recipe) => {
+    const hasValidInput =
+      recipe.name.includes(input) || recipe.description.includes(input);
+    const hasValidAppliance =
+      selectedAppliance === "" || selectedAppliance === recipe.appliance;
+    const hasValidUstensiles =
+      selectedUstensiles.length === 0 ||
+      selectedUstensiles.every((elt) => recipe.ustensils.includes(elt));
+    const hasValidIngredients =
+      selectedIngredients.length === 0 ||
+      selectedIngredients.every((elt) =>
+        recipe.ingredients.map((ing) => ing.ingredient).includes(elt)
+      );
+
+    return (
+      hasValidInput &&
+      hasValidAppliance &&
+      hasValidUstensiles &&
+      hasValidIngredients
+    );
+  });
 }
 
 // la fonction qui stock les appliances dans result
 export function getAppliances(recipes, selectedAppliance) {
-  const result = [];
-  for (let i = 0; i < recipes.length; i++) {
-    const recipe = recipes[i];
-    if (
-        // si le tableau result ne contient pas DEJA l'appareil ET cette appareil n'est pas DEJA selectioné
-      !result.includes(recipe.appliance) &&
-      selectedAppliance !== recipe.appliance
-    ) {
-      result.push(recipe.appliance);
-    }
-  }
-  return result;
+  const result = recipes
+    .map((recipe) => recipe.appliance)
+    .filter((appliance) => appliance !== selectedAppliance);
+  return [...new Set(result)];
 }
 
 // la fonction qui stock les ustensils dans result
 export function getUstensils(recipes, selectedUstensiles) {
+  const ustensilsList = recipes
+    .flatMap((recipe) => recipe.ustensils)
+    .filter((ustensil) => !selectedUstensiles.includes(ustensil));
+
   const result = [];
-  for (let i = 0; i < recipes.length; i++) {
-    const recipe = recipes[i];
-    for (let j = 0; j < recipe.ustensils.length; j++) {
-      const ustensil = recipe.ustensils[j];
-      if (
-    // si le tableau result ne contient pas DEJA l'ustensil ET cet ustensil n'est pas DEJA selectioné
-        !result.includes(ustensil) &&
-        !selectedUstensiles.includes(ustensil)
-      ) {
-        result.push(recipe.ustensils[j]);
-      }
+  ustensilsList.forEach((element) => {
+    if (
+      !result.map((elt) => elt.toUpperCase()).includes(element.toUpperCase())
+    ) {
+      result.push(element);
     }
-  }
+  });
   return result;
 }
 
 // la fonction qui stoque les ingredients dans result
+
 export function getIngredients(recipes, selectedIngredients) {
+  const ingredientsList = recipes.flatMap((recipe) =>
+    recipe.ingredients
+      .map((ing) => ing.ingredient)
+      .filter(
+        (ing) =>
+          !selectedIngredients
+            .map((i) => i.toUpperCase())
+            .includes(ing.toUpperCase())
+      )
+  );
+  // Supprimer les doublons
   const result = [];
-  for (let i = 0; i < recipes.length; i++) {
-    const recipe = recipes[i];
-    for (let j = 0; j < recipe.ingredients.length; j++) {
-      const ingredient = recipe.ingredients[j].ingredient;
-      if (
-            // si le tableau result ne contient pas DEJA l'ingredient ET cet ungredient n'est pas DEJA selectioné
-        !result.includes(ingredient) &&
-        !selectedIngredients.includes(ingredient)
-      ) {
-        result.push(ingredient);
-      }
+  ingredientsList.forEach((element) => {
+    if (
+      !result.map((elt) => elt.toUpperCase()).includes(element.toUpperCase())
+    ) {
+      result.push(element);
     }
-  }
+  });
   return result;
 }
 
-// //   fct de recherche par TAG dans le dropdown ingredients
-export function ingredientSearchByTag(ingredientsList, input) {
-    const result = [];
-    for (let i = 0; i < ingredientsList.length; i++) {
-      if (ingredientsList[i].includes(input)) {
-        result.push(ingredientsList[i]);
-      }
-    }
-    return result;
-}
-
-// // fct de recherche par TAG dans les 3 dropdown
-
-export function applianceSearchByTag(optionsList, input) {
-  const result = [];
-  for (let i = 0; i < optionsList.length; i++) {
-    if (optionsList[i].includes(input)) {
-      result.push(optionsList[i]);
-    }
-  }
-  return result;
-}
-// // fct de recherche par TAG dans le dropdown ustensils
-
-export function ustensileSearchByTag(ustensilsList, input){
-    const result = []
-    for (let i = 0; i < ustensilsList.length; i++) {
-        if (ustensilsList[i].includes(input)){
-            result.push(ustensilsList[i])
-        }
-    }
-    return result
+// fct de recherche par TAG dans les 3 dropdown
+export function searchByTag(optionsList, input) {
+  return optionsList.filter((option) =>
+    option.toUpperCase().includes(input.toUpperCase())
+  );
 }
