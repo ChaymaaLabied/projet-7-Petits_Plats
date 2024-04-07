@@ -7,11 +7,21 @@ export function search(
   selectedUstensiles,
   selectedIngredients
 ) {
+  // Check if input.length > 3
+  if (
+    input.length < 3 &&
+    selectedAppliance.length === 0 &&
+    selectedUstensiles.length === 0 &&
+    selectedIngredients.length === 0
+  ) {
+    return recipes;
+  }
   return recipes.filter((recipe) => {
     const hasValidInput =
       recipe.name.includes(input) || recipe.description.includes(input);
     const hasValidAppliance =
-      selectedAppliance === "" || selectedAppliance === recipe.appliance;
+      selectedAppliance.length === 0 ||
+      selectedAppliance.every((elt) => recipe.appliance === elt);
     const hasValidUstensiles =
       selectedUstensiles.length === 0 ||
       selectedUstensiles.every((elt) => recipe.ustensils.includes(elt));
@@ -34,7 +44,7 @@ export function search(
 export function getAppliances(recipes, selectedAppliance) {
   const result = recipes
     .map((recipe) => recipe.appliance)
-    .filter((appliance) => appliance !== selectedAppliance);
+    .filter((appliance) => !selectedAppliance.includes(appliance));
   return [...new Set(result)];
 }
 

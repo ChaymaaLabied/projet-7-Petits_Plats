@@ -9,7 +9,7 @@ import {
 import { setDropdownBtn } from "../utils/dropdown.js";
 
 let recettes = recipes;
-let selectedAppliance = "";
+let selectedAppliance = [];
 let selectedUstensiles = [];
 let selectedIngredients = [];
 let allAppliances;
@@ -105,218 +105,65 @@ function displayMediaRecipeCard() {
   }
 }
 
-// // affichage des appareils dans le dropdown
-function displayAppliances(appliances) {
-  const appliancesList = document.querySelector(
-    "#appliances .dropdown__options"
-  );
-  appliancesList.innerHTML = ""; // pour eviter le cumul des resultats d'affichage a chaque fois , on efface the old ones..
-  appliances.forEach((elt) => {
-    const li = document.createElement("li");
-    li.textContent = elt;
-    appliancesList.appendChild(li);
-
-    li.addEventListener("click", (e) => {
-      const selectedOption = document.createElement("li");
-      const value = li.textContent;
-      selectedOption.textContent = value;
-
-      const unselectButton = document.createElement("div");
-      unselectButton.classList.add("unselect-btn");
-      unselectButton.addEventListener("click", unselectTag);
-      selectedOption.appendChild(unselectButton);
-
-      li.classList.toggle("selected");
-      document
-        .querySelector("#appliances .dropdown__selected-options")
-        .appendChild(selectedOption);
-
-      // Ajouter à Selected-tags
-      const selectedTags = document.querySelector(".selected-tags")
-      const tag = document.createElement("div")
-      tag.textContent = value;
-      const unselectTagButton = unselectButton.cloneNode()
-      unselectTagButton.addEventListener("click", unselectTag)
-      tag.appendChild(unselectTagButton);
-      selectedTags.appendChild(tag);
-
-      selectedAppliance = value;
-      refreshSearch();
-
-      function unselectTag() {
-        selectedOption.classList.toggle("selected");
-        document
-          .querySelector("#appliances .dropdown__selected-options")
-          .removeChild(selectedOption);
-        selectedTags.removeChild(tag);
-        // remove from selectedApplicance
-        selectedAppliance = "";
-        refreshSearch();
-      }
-    });
-  });
-}
-// affichage des ingredients dans le dropdown
-function displayIngredients(ingredients) {
-  const ingredientsList = document.querySelector(
-    "#ingredients .dropdown__options"
-  );
-  ingredientsList.innerHTML = "";
-  ingredients.forEach((elt) => {
-    const li = document.createElement("li");
-    li.textContent = elt;
-    ingredientsList.appendChild(li);
-    li.addEventListener("click", (e) => {
-      const selectedOption = document.createElement("li");
-      const value = li.textContent;
-      selectedOption.textContent = value;
-
-      const unselectButton = document.createElement("div");
-      unselectButton.classList.add("unselect-btn");
-      unselectButton.addEventListener("click", unselectTag);
-      selectedOption.appendChild(unselectButton);
-
-      li.classList.toggle("selected");
-      document
-        .querySelector("#ingredients .dropdown__selected-options")
-        .appendChild(selectedOption);
-
-      // Ajouter à Selected-tags
-      const selectedTags = document.querySelector(".selected-tags");
-      const tag = document.createElement("div");
-      tag.textContent = value;
-      const unselectTagButton = unselectButton.cloneNode(true);
-      unselectTagButton.addEventListener("click", unselectTag);
-      tag.appendChild(unselectTagButton);
-      selectedTags.appendChild(tag);
-
-      selectedIngredients.push(value);
-      refreshSearch();
-
-      function unselectTag() {
-        selectedOption.classList.toggle("selected");
-        document
-          .querySelector("#ingredients .dropdown__selected-options")
-          .removeChild(selectedOption);
-        selectedTags.removeChild(tag);
-        // remove from selectedApplicance
-        selectedIngredients = selectedIngredients.filter(
-          (elt) => elt !== value
-        );
-        refreshSearch();
-      }
-    });
-  });
-}
-
-// affichage des ustensils dans le dropdown
-function displayUstensils(ustensils) {
-  const ustensilsList = document.querySelector("#ustensils .dropdown__options");
-  ustensilsList.innerHTML = "";
-
-  ustensils.forEach((elt) => {
-    const li = document.createElement("li");
-    li.textContent = elt;
-    ustensilsList.appendChild(li);
-    li.addEventListener("click", (e) => {
-      const selectedOption = document.createElement("li");
-      const value = li.textContent;
-      selectedOption.textContent = value;
-
-      const unselectButton = document.createElement("div");
-      unselectButton.classList.add("unselect-btn");
-      unselectButton.addEventListener("click", unselectTag);
-      selectedOption.appendChild(unselectButton);
-
-      li.classList.toggle("selected");
-      document
-        .querySelector("#ustensils .dropdown__selected-options")
-        .appendChild(selectedOption);
-
-      // Ajouter à Selected-tags
-      const selectedTags = document.querySelector(".selected-tags");
-      const tag = document.createElement("div");
-      tag.textContent = value;
-      const unselectTagButton = unselectButton.cloneNode(true);
-      unselectTagButton.addEventListener("click", unselectTag);
-      tag.appendChild(unselectTagButton);
-      selectedTags.appendChild(tag);
-
-      selectedUstensiles.push(value);
-      refreshSearch();
-
-      function unselectTag() {
-        selectedOption.classList.toggle("selected");
-        document
-          .querySelector("#ustensils .dropdown__selected-options")
-          .removeChild(selectedOption);
-        selectedTags.removeChild(tag);
-        // remove from selectedApplicance
-        selectedUstensiles = selectedUstensiles.filter((elt) => elt !== value);
-        refreshSearch();
-      }
-    });
-  });
-}
-
 //  version 2 de tt ces 3 fct 
-// function displayOptions(options, containerSelector, selectedOptionsArray, refreshFunction) {
-//   const optionsList = document.querySelector(containerSelector + " .dropdown__options");
-//   optionsList.innerHTML = "";
+function displayOptions(options, containerSelector, selectedOptionsArray, refreshFunction) {
+  const optionsList = document.querySelector(containerSelector + " .dropdown__options");
+  optionsList.innerHTML = "";
 
-//   options.forEach((option) => {
-//     const li = document.createElement("li");
-//     li.textContent = option;
-//     optionsList.appendChild(li);
+  options.forEach((option) => {
+    const li = document.createElement("li");
+    li.textContent = option;
+    optionsList.appendChild(li);
 
-//     li.addEventListener("click", () => {
-//       const selectedOption = document.createElement("li");
-//       const value = li.textContent;
-//       selectedOption.textContent = value;
+    li.addEventListener("click", () => {
+      const selectedOption = document.createElement("li");
+      const value = li.textContent;
+      selectedOption.textContent = value;
 
-//       const unselectButton = document.createElement("div");
-//       unselectButton.classList.add("unselect-btn");
-//       unselectButton.addEventListener("click", unselectTag);
-//       selectedOption.appendChild(unselectButton);
+      const unselectButton = document.createElement("div");
+      unselectButton.classList.add("unselect-btn");
+      unselectButton.addEventListener("click", unselectTag);
+      selectedOption.appendChild(unselectButton);
 
-//       li.classList.toggle("selected");
-//       document.querySelector(containerSelector + " .dropdown__selected-options").appendChild(selectedOption);
+      li.classList.toggle("selected");
+      document.querySelector(containerSelector + " .dropdown__selected-options").appendChild(selectedOption);
 
-//       // Ajouter à Selected-tags
-//       const selectedTags = document.querySelector(".selected-tags");
-//       const tag = document.createElement("div");
-//       tag.textContent = value;
-//       const unselectTagButton = unselectButton.cloneNode(true);
-//       unselectTagButton.addEventListener("click", unselectTag);
-//       tag.appendChild(unselectTagButton);
-//       selectedTags.appendChild(tag);
+      // Ajouter à Selected-tags
+      const selectedTags = document.querySelector(".selected-tags");
+      const tag = document.createElement("div");
+      tag.textContent = value;
+      const unselectTagButton = unselectButton.cloneNode(true);
+      unselectTagButton.addEventListener("click", unselectTag);
+      tag.appendChild(unselectTagButton);
+      selectedTags.appendChild(tag);
+      selectedOptionsArray.push(value);
+      refreshFunction();
 
-//       selectedOptionsArray.push(value);
-//       refreshFunction();
+      function unselectTag() {
+        selectedOption.classList.toggle("selected");
+        document.querySelector(containerSelector + " .dropdown__selected-options").removeChild(selectedOption);
+        selectedTags.removeChild(tag);
+        const index = selectedOptionsArray.indexOf(value);
+        selectedOptionsArray.splice(index, 1);
 
-//       function unselectTag() {
-//         selectedOption.classList.toggle("selected");
-//         document.querySelector(containerSelector + " .dropdown__selected-options").removeChild(selectedOption);
-//         selectedTags.removeChild(tag);
-//         selectedOptionsArray = selectedOptionsArray.filter((elt) => elt !== value);
-//         refreshFunction();
-//       }
-//     });
-//   });
-// }
+        refreshFunction();
+      }
+    });
+  });
+}
 
 // // Usage
-// function displayAppliances(appliances) {
-//   displayOptions(appliances, "#appliances", selectedAppliance, refreshSearch);
-// }
+function displayAppliances(appliances) {
+  displayOptions(appliances, "#appliances", selectedAppliance, refreshSearch);
+}
 
-// function displayIngredients(ingredients) {
-//   displayOptions(ingredients, "#ingredients", selectedIngredients, refreshSearch);
-// }
+function displayIngredients(ingredients) {
+  displayOptions(ingredients, "#ingredients", selectedIngredients, refreshSearch);
+}
 
-// function displayUstensils(ustensils) {
-//   displayOptions(ustensils, "#ustensils", selectedUstensiles, refreshSearch);
-// }
+function displayUstensils(ustensils) {
+  displayOptions(ustensils, "#ustensils", selectedUstensiles, refreshSearch);
+}
 
 
 
