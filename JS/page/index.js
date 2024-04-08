@@ -6,7 +6,7 @@ import {
   search,
   applianceSearchByTag,
   ingredientSearchByTag,
-  ustensileSearchByTag
+  ustensileSearchByTag,
 } from "../template/template.js";
 import { setDropdownBtn } from "../utils/dropdown.js";
 
@@ -32,7 +32,7 @@ function getRecipeCard(dataRecipe) {
   const articleRecipeCard = document.createElement("article");
   articleRecipeCard.setAttribute("class", "recipe-card");
   const recipeTime = document.createElement("div");
-  recipeTime.setAttribute("class", "recipe-card__time"); // setatrr a changer b classlist push
+  recipeTime.setAttribute("class", "recipe-card__time");
   recipeTime.textContent = `${time}min`;
   const recipeDivImg = document.createElement("div");
   recipeDivImg.setAttribute("class", "recipe-card__img");
@@ -111,7 +111,7 @@ function displayAppliances(appliances) {
   const appliancesList = document.querySelector(
     "#appliances .dropdown__options"
   );
-  appliancesList.innerHTML = ""; // pour eviter le cumul des resultats d'affichage a chaque fois , on efface the old one..
+  appliancesList.innerHTML = ""; // pour eviter le cumul des resultats d'affichage a chaque fois , on efface the old ones..
   appliances.forEach((elt) => {
     const li = document.createElement("li");
     li.textContent = elt;
@@ -133,11 +133,11 @@ function displayAppliances(appliances) {
         .appendChild(selectedOption);
 
       // Ajouter à Selected-tags
-      const selectedTags = document.querySelector(".selected-tags")
-      const tag = document.createElement("div")
+      const selectedTags = document.querySelector(".selected-tags");
+      const tag = document.createElement("div");
       tag.textContent = value;
-      const unselectTagButton = unselectButton.cloneNode()
-      unselectTagButton.addEventListener("click", unselectTag)
+      const unselectTagButton = unselectButton.cloneNode();
+      unselectTagButton.addEventListener("click", unselectTag);
       tag.appendChild(unselectTagButton);
       selectedTags.appendChild(tag);
 
@@ -262,7 +262,6 @@ function displayUstensils(ustensils) {
 
 // l'appel des fct d'affichage
 function refreshSearch() {
-  //utiliser opérateur ternaire
   recettes = search(
     searchInput,
     selectedAppliance,
@@ -271,13 +270,12 @@ function refreshSearch() {
   );
   divFoundRecipes.textContent = `${recettes.length} Recettes`;
   displayMediaRecipeCard();
-  // This is nice
   allAppliances = getAppliances(recettes, selectedAppliance);
   allUstensiles = getUstensils(recettes, selectedUstensiles);
   allIngredients = getIngredients(recettes, selectedIngredients);
   displayAppliances(allAppliances);
   displayUstensils(allUstensiles);
-  displayIngredients(allIngredients)
+  displayIngredients(allIngredients);
 }
 
 // Affichage initial
@@ -312,13 +310,13 @@ inputSearchAppliances.addEventListener("input", (e) => {
 
 const inputSearchUstensils = document.getElementById("TAGsearch_ustensils");
 inputSearchUstensils.addEventListener("input", (e) => {
-  const TAGsearchInput = e.target.value; // est ce que je doischanger le nom de la variable
+  const TAGsearchInput = e.target.value; 
   displayUstensils(ustensileSearchByTag(allUstensiles, TAGsearchInput));
 });
 // recherche par tag dans ustensils
 
 const inputSearchIngredients = document.getElementById("TAGsearch_ingredients");
 inputSearchIngredients.addEventListener("input", (e) => {
-  const TAGsearchInput = e.target.value; // est ce que je dois changer le nom de la variable
- displayIngredients(ingredientSearchByTag(allIngredients, TAGsearchInput))
+  const TAGsearchInput = e.target.value; 
+  displayIngredients(ingredientSearchByTag(allIngredients, TAGsearchInput));
 });
