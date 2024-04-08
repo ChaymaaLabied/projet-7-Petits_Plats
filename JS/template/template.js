@@ -113,7 +113,7 @@ export function getIngredients(recipes, selectedIngredients) {
 export function ingredientSearchByTag(ingredientsList, input) {
 	const result = []
 	for (let i = 0; i < ingredientsList.length; i++) {
-		if (ingredientsList[i].includes(input)) {
+		if (ingredientsList[i].toUpperCase().includes(input.toUpperCase())) {
 			result.push(ingredientsList[i])
 		}
 	}
@@ -125,7 +125,7 @@ export function ingredientSearchByTag(ingredientsList, input) {
 export function applianceSearchByTag(optionsList, input) {
 	const result = []
 	for (let i = 0; i < optionsList.length; i++) {
-		if (optionsList[i].includes(input)) {
+		if (optionsList[i].toUpperCase().includes(input.toUpperCase())) {
 			result.push(optionsList[i])
 		}
 	}
@@ -136,7 +136,7 @@ export function applianceSearchByTag(optionsList, input) {
 export function ustensileSearchByTag(ustensilsList, input) {
 	const result = []
 	for (let i = 0; i < ustensilsList.length; i++) {
-		if (ustensilsList[i].includes(input)) {
+		if (ustensilsList[i].toUpperCase().includes(input.toUpperCase())) {
 			result.push(ustensilsList[i])
 		}
 	}
