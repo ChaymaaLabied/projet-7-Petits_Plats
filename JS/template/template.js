@@ -10,7 +10,7 @@ export function search(
 	// Check if input.length > 3
 	if (
 		input.length < 3 &&
-    selectedAppliance.length === 0 && // repetition
+    selectedAppliance.length === 0 && 
     selectedUstensiles.length === 0 &&
     selectedIngredients.length === 0
 	) {
@@ -20,7 +20,7 @@ export function search(
 		const hasValidInput =
       recipe.name.includes(input) || recipe.description.includes(input)
 		const hasValidAppliance =
-      selectedAppliance.length === 0 || // voila ce quoi je parle
+      selectedAppliance.length === 0 || 
       selectedAppliance.every((elt) => recipe.appliance === elt)
 		const hasValidUstensiles =
       selectedUstensiles.length === 0 ||
