@@ -105,7 +105,7 @@ function displayMediaRecipeCard() {
   }
 }
 
-//  version 2 de tt ces 3 fct 
+//  version 2 de tt ces 3 fct d'affichage 
 function displayOptions(options, containerSelector, selectedOptionsArray, refreshFunction) {
   const optionsList = document.querySelector(containerSelector + " .dropdown__options");
   optionsList.innerHTML = "";
@@ -152,7 +152,7 @@ function displayOptions(options, containerSelector, selectedOptionsArray, refres
   });
 }
 
-// // Usage
+//  Usage
 function displayAppliances(appliances) {
   displayOptions(appliances, "#appliances", selectedAppliance, refreshSearch);
 }
@@ -169,7 +169,6 @@ function displayUstensils(ustensils) {
 
 // l'appel des fct d'affichage
 function refreshSearch() {
-  //utiliser opérateur ternaire
   recettes = search(
     searchInput,
     selectedAppliance,
@@ -178,7 +177,6 @@ function refreshSearch() {
   );
   divFoundRecipes.textContent = `${recettes.length} Recettes`;
   displayMediaRecipeCard();
-  // This is nice
   allAppliances = getAppliances(recettes, selectedAppliance);
   allUstensiles = getUstensils(recettes, selectedUstensiles);
   allIngredients = getIngredients(recettes, selectedIngredients);

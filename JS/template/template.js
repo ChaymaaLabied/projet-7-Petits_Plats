@@ -1,6 +1,6 @@
 import { recipes } from "../data/recipes.js";
 
-// la fonction de recherche dans en parallèle entre tag et barre principale avec la boucle for
+// la fonction de recherche dans en parallèle entre tag et barre principale avec la méthode filter()
 export function search(
   input,
   selectedAppliance,
@@ -10,7 +10,7 @@ export function search(
   // Check if input.length > 3
   if (
     input.length < 3 &&
-    selectedAppliance.length === 0 &&
+    selectedAppliance.length === 0 && // repetition 
     selectedUstensiles.length === 0 &&
     selectedIngredients.length === 0
   ) {
@@ -20,7 +20,7 @@ export function search(
     const hasValidInput =
       recipe.name.includes(input) || recipe.description.includes(input);
     const hasValidAppliance =
-      selectedAppliance.length === 0 ||
+      selectedAppliance.length === 0 || // voila ce quoi je parle 
       selectedAppliance.every((elt) => recipe.appliance === elt);
     const hasValidUstensiles =
       selectedUstensiles.length === 0 ||
@@ -40,7 +40,7 @@ export function search(
   });
 }
 
-// la fonction qui stock les appliances dans result
+// la fonction qui stoque les appliances dans result
 export function getAppliances(recipes, selectedAppliance) {
   const result = recipes
     .map((recipe) => recipe.appliance)
@@ -48,7 +48,7 @@ export function getAppliances(recipes, selectedAppliance) {
   return [...new Set(result)];
 }
 
-// la fonction qui stock les ustensils dans result
+// la fonction qui stoque les ustensils dans result
 export function getUstensils(recipes, selectedUstensiles) {
   const ustensilsList = recipes
     .flatMap((recipe) => recipe.ustensils)
