@@ -71,7 +71,6 @@ export function getAppliances(recipes, selectedAppliance) {
 	}
 	return result
 }
-
 // la fonction qui stoque les ustensils dans result
 export function getUstensils(recipes, selectedUstensiles) {
 	const result = []
