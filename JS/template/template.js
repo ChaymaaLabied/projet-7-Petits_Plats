@@ -7,7 +7,6 @@ export function search(
 	selectedUstensiles,
 	selectedIngredients
 ) {
-	// console.log('selectedIngredients',selectedIngredients)
 	const result = []
 	if (
 		input.length < 3 &&
