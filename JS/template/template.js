@@ -34,13 +34,13 @@ export function search(
         ) {
           // la recherche dans la barre principale
           if (
-            recipe.name.includes(input) ||
-            recipe.description.includes(input)
+            recipe.name.toUpperCase().includes(input.toUpperCase()) ||
+            recipe.description.toUpperCase().includes(input.toUpperCase())
           ) {
             result.push(recipe);
           } else {
             for (let j = 0; j < recipe.ingredients.length; j++) {
-              if (recipe.ingredients[j].ingredient.includes(input)) {
+              if (recipe.ingredients[j].ingredient.toUpperCase().includes(input.toUpperCase())) {
                 result.push(recipe);
               }
             }
